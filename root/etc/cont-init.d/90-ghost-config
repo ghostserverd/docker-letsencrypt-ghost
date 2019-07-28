@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+
+# copy in custom configs
+cp -r /nginx/ /config/
+rm -rf /nginx
+
+# generate the password file
+NGINX_USER=${NGINX_USER:-admin}
+NGINX_PASS=${NGINX_PASS:-adminadmin}
+htpasswd -b -c /config/nginx/.htpasswd $NGINX_USER $NGINX_PASS
+
+cat <<"EOF"
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+         _               _
+    __ _| |__   ___  ___| |_
+   / _` | '_ \ / _ \/ __| __/
+  | (_| | | | | (_) \__ \ |_
+   \__, |_|_|_|\___/|___/\__|
+   |___/      /   _ \
+          (¯\| o (@) |/¯)
+           \_  .___.  _/
+            /   !_!   \
+           /_.--._.--._\
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+EOF
+
+chown -R abc:abc \
+        /config
