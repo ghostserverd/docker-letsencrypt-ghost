@@ -1,14 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-# copy in custom configs
-cp -r /nginx/ /config/
-rm -rf /nginx
-
-# generate the password file
-NGINX_USER=${NGINX_USER:-admin}
-NGINX_PASS=${NGINX_PASS:-adminadmin}
-htpasswd -b -c /config/nginx/.htpasswd $NGINX_USER $NGINX_PASS
-
 cat <<"EOF"
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
          _               _
@@ -25,5 +16,20 @@ cat <<"EOF"
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 EOF
 
-chown -R abc:abc \
-        /config
+# copy in custom configs
+cp -r /nginx/ /config/
+rm -rf /nginx
+
+# generate the password file
+NGINX_USER=${NGINX_USER:-admin}
+NGINX_PASS=${NGINX_PASS:-adminadmin}
+htpasswd -b -c /config/nginx/.htpasswd $NGINX_USER $NGINX_PASS
+
+# only chown the /config directory if it is not owned by abc:abc
+CHOWN_DIR=/config
+DIR_OWNER=`stat -c "%U:%G" $CHOWN_DIR`
+if [[ $DIR_OWNER != "abc:abc" ]]
+then
+    echo "chowning $CHOWN_DIR please be patient"
+    chown -R abc:abc $CHOWN_DIR
+fi
